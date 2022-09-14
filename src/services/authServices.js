@@ -19,5 +19,12 @@ const login = async (email, password) => {
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
   return { token, user };
 };
+const userAvatar = async (user, avatar) => {
+  return await User.findByIdAndUpdate(
+    { _id: user._id },
+    { avatarURL: avatar },
+    { new: true }
+  );
+};
 
-module.exports = { registration, login };
+module.exports = { registration, login, userAvatar };

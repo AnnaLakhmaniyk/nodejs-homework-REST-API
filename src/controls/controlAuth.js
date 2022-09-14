@@ -1,4 +1,4 @@
-const { registration, login } = require("../services/authServices");
+const { registration, login, userAvatar } = require("../services/authServices");
 
 const registrationControlls = async (req, res, next) => {
   try {
@@ -51,9 +51,20 @@ const currentControlls = async (req, res, next) => {
   }
 };
 
+const userAvatarControlls = async (req, res, next) => {
+  const avatar = await userAvatar(req.user, req.file.path);
+  if (!avatar) {
+    res.status(401).json({
+      message: "Not authorized",
+    });
+  }
+  res.status(200).json({ avatarURL: avatar.avatarURL });
+};
+
 module.exports = {
   registrationControlls,
   loginControlls,
   logoutControlls,
   currentControlls,
+  userAvatarControlls,
 };
