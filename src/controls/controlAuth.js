@@ -1,4 +1,10 @@
-const { registration, login, userAvatar } = require("../services/authServices");
+const {
+  registration,
+  login,
+  userAvatar,
+  verification,
+  verifyService,
+} = require("../services/authServices");
 
 const registrationControlls = async (req, res, next) => {
   try {
@@ -60,6 +66,30 @@ const userAvatarControlls = async (req, res, next) => {
   }
   res.status(200).json({ avatarURL: avatar.avatarURL });
 };
+const verificationControlls = async (req, res, next) => {
+  try {
+    await verification(req.params.verificationToken);
+    res.status(200).json({
+      message: "Verification successful",
+    });
+  } catch (error) {
+    res.status(404).json({
+      message: "User not found",
+    });
+  }
+};
+
+const verifyControlls = async (req, res, next) => {
+  const user = await verifyService(req.body.email);
+
+  if (!user) {
+    return res
+      .status(400)
+      .json({ message: "Verification has already been passed" });
+  }
+
+  return res.status(200).json({ message: "Verification email sent" });
+};
 
 module.exports = {
   registrationControlls,
@@ -67,4 +97,6 @@ module.exports = {
   logoutControlls,
   currentControlls,
   userAvatarControlls,
+  verificationControlls,
+  verifyControlls,
 };

@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
   avatarURL: {
     type: String,
   },
+  verificationToken: {
+    type: String,
+    required: [true, "Verify token is required"],
+  },
 });
 
 userSchema.pre("save", async function () {
