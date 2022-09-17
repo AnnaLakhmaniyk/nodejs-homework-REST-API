@@ -17,7 +17,6 @@ module.exports = {
       favorite: Joi.boolean().default(false),
     });
 
-
     const validateBody = schema.validate(req.body);
     const { error } = validateBody;
     if (error) {
@@ -46,5 +45,23 @@ module.exports = {
 
     next();
   },
+  validateVerify: (req, res, next) => {
+    const schema = Joi.object({
+      email: Joi.string()
+        .email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "net"] },
+        })
+        .required(),
+    });
 
+    const validateBody = schema.validate(req.body);
+    const { error } = validateBody;
+    if (error) {
+      return res
+        .status(400)
+        .json({ message: `missing required ${error} field` });
+    }
+    next();
+  },
 };
